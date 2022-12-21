@@ -1,2 +1,2 @@
 # Password-Protector
-Batman, but instead of Gotham its your passwords. 
+Like Batman, but instead of Gotham its your passwords. 
