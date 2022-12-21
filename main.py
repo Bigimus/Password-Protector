@@ -1,3 +1,4 @@
+from os import remove
 from cryptography.fernet import Fernet
 import tkinter as tk
 import linecache as lc
@@ -18,9 +19,6 @@ All usernames and passwords are stored encrypted.
 Everytime they are accessed they will be decrypted.
 This program will be ran through a GUI. 
 """
-
-emptyLine = ""
-
 key = Fernet.generate_key()
 fernet = Fernet(key)
 
@@ -41,7 +39,7 @@ def decodeData(password):
     tempDecoded = fernet.encrypt(password.decode())
     print("Decoded!")
     return tempDecoded
-    
+
 def addData():
     with open('ENCODED_USERNAMES_PASSWORDS.txt', mode = "a+") as file:
         tempData = input("Input in this format! APPLICATION/WEBSITE,USERNAME,PASSWORD, be sure to include the commas! ")   
@@ -53,18 +51,15 @@ def addData():
         tempEncoded = encodeData(tempList[2])
         tempStr = tempList[0] + ',' + tempList[1] + ',' + str(tempEncoded)
         file.writelines(tempStr)
-        print("Done!")
     file.close
-    
+
 def changeData():
-    print("WIP")
-    
-def removeData():
     with open('ENCODED_USERNAMES_PASSWORDS.txt', mode = "r+") as file:
-        app = input("Input the APPLICATION/WEBSITE you wish to remove. ")
+        print("WIP")
         tempMatch = []
-        tempLine = []
-        tempUsers = []
+        tempUsers = [] 
+        tempDict = {}
+        app = input("Input the APPLICATION/WEBSITE you wish to edit. ")
         for num,line in enumerate(file,1):
             temp = line.split(",")
             if temp[0] != app:
@@ -74,21 +69,52 @@ def removeData():
                 tempMatch.append(num)
         if len(tempMatch) >> 1:
             for i in tempMatch:
-                tempLine.append(lc.getline(r"ENCODED_USERNAMES_PASSWORDS.txt", i))
-            for i in tempLine:
-                tempString = i
+                tempString = lc.getline(r"ENCODED_USERNAMES_PASSWORDS.txt", i)
                 temp = tempString.split(",")
                 tempUsers.append(temp[1])
+                tempDict.update({temp[1]:i})
             usernameSelect = input("Which username would you like to remove? " + str(tempUsers))
             for i in tempUsers:
                 if i != usernameSelect:
                     continue
                 else:
-                    replaceLine("ENCODED_USERNAMES_PASSWORDS.txt",500,"")
+                    lineNum = tempDict.get(i)
+                    #need to work in changing the contents of the line instead of just deleting it. 
+                    #replaceLine("ENCODED_USERNAMES_PASSWORDS.txt",lineNum - 1,"")
         else:
             confirmation = input("Are you sure you want to delete this data? (Y/N) ")
             if confirmation == "Y" or confirmation == "y":
-                print(str(tempMatch[0]) + "  ---------")
+                #replaceLine("ENCODED_USERNAMES_PASSWORDS.txt",tempMatch[0] - 1,"")
+
+def removeData():
+    with open('ENCODED_USERNAMES_PASSWORDS.txt', mode = "r+") as file:
+        tempMatch = []
+        tempUsers = [] 
+        tempDict = {}
+        app = input("Input the APPLICATION/WEBSITE you wish to remove. ")
+        for num,line in enumerate(file,1):
+            temp = line.split(",")
+            if temp[0] != app:
+                continue
+            else:
+                print("Match")
+                tempMatch.append(num)
+        if len(tempMatch) >> 1:
+            for i in tempMatch:
+                tempString = lc.getline(r"ENCODED_USERNAMES_PASSWORDS.txt", i)
+                temp = tempString.split(",")
+                tempUsers.append(temp[1])
+                tempDict.update({temp[1]:i})
+            usernameSelect = input("Which username would you like to remove? " + str(tempUsers))
+            for i in tempUsers:
+                if i != usernameSelect:
+                    continue
+                else:
+                    lineNum = tempDict.get(i)
+                    replaceLine("ENCODED_USERNAMES_PASSWORDS.txt",lineNum - 1,"")
+        else:
+            confirmation = input("Are you sure you want to delete this data? (Y/N) ")
+            if confirmation == "Y" or confirmation == "y":
                 replaceLine("ENCODED_USERNAMES_PASSWORDS.txt",tempMatch[0] - 1,"")
     
 def importData():
@@ -98,9 +124,8 @@ def importData():
         with open("ENCODED_USERNAMES_PASSWORDS.txt", mode = "r+") as file2:
             for line in file:
                 temp = line.split(",")
-                tempEncoded = encodeData(temp[2])
-                tempDecoded = fernet.decrypt(tempEncoded).decode()
-                tempStr = temp[0] + "," + str(tempEncoded) + "\n"
+                tempEncoded = encodeData(temp[1])
+                tempStr = temp[0] + "," + temp[1] + "," + str(tempEncoded) + "\n"
                 file2.writelines(tempStr)
         file2.close
     file.close
