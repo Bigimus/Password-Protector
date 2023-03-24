@@ -5,11 +5,14 @@ from kivymd.app import MDApp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.screen import MDScreen
 
-from ObjectHandler import Configurations
-from ApplicationHandler import Account
+from ObjectHandler import Configurations as Config
+from ObjectHandler import Account
+from ObjectHandler import Settings
 
-UI = Configurations.UI
-SETTINGS = Configurations.SETTINGS
+import StorageHandler as SH
+
+UI = Config.UI
+SETTINGS = Config.SETTINGS
 
 Window.size = 1280, 720
 
@@ -27,12 +30,12 @@ The features of this program include:
     
 All usernames and passwords are stored encrypted. 
 Everytime they are accessed they will be decrypted.
-This program will be ran through a GUI. 
+This program will be ran through a GUI
 """
 
 class LoginWindow(MDScreen):
     def validateLogin(self, username, password):
-        if username == Configurations.USERNAME and password == Configurations.PASSWORD: 
+        if username == Settings().root_username and password == Settings().root_password:   # noqa: E501
             return True
         else: 
             return False
@@ -48,21 +51,29 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = "Light"
         self.title = "Password Protector"
         self.kv = Builder.load_file(UI)
+        self.loadSettings()
         return self.kv
     
-    def validateData(*values):
-        for value in values:
-            if value == "" and values.index(value) != 0:
+    def validateData(*args):
+        for arg in args:
+            if arg == "" and args.index(arg) != 0:
                 return "False"
             else:
                 pass
         return "True"
-        
+     
     ## ACCOUNTS ##
     def createAccount(self, app, name, email, pw):
         self.account = Account(app, name, email, pw).createAccount()
-        return "True"
 
-    
+    ## SETTINGS ##
+    def saveSettings(self, root_username, root_password):
+        self.settings = Settings(root_username, root_password).saveSettings()
+
+    def loadSettings(self):
+        data = SH.readJson(SETTINGS)
+        self.root_username = data["root_username"]
+        self.root_password = data["root_password"]
+
 
 MainApp().run()
