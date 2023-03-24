@@ -3,7 +3,30 @@
 
 WindowManager:
     #LoginWindow:
-    HomeWindow:
+    HomeWindow: 
+
+<BackgroundImage@Image>:
+    source: "Images/Background.jpg"
+    allow_stretch: True
+    keep_ratio: False 
+
+<PasswordLayout@RelativeLayout>:
+    MDTextField:
+        id: password
+        hint_text: "Password"
+        hint_text_color: 1, 1, 1, 1
+        multiline: False
+        password: True
+        icon_left: "key-variant"
+
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"center_y": 1.75}
+        pos: password.width - self.width + dp(1), 0
+        theme_text_color: "Hint"
+        on_release:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            password.password = False if password.password is True else True
 
 <SettingsPopup@Popup>:
     id: Settings
@@ -11,7 +34,7 @@ WindowManager:
     size_hint: 0.4, 0.5
     title: "Settings"
     bold: True
-    title_size: '32sp'
+    title_size: dp(32)
     title_color: 1, 1, 1, 1
     title_align: "center"
     separator_color: 1, 1, 1, 0
@@ -20,14 +43,14 @@ WindowManager:
 
     MDBoxLayout:
         orientation: "vertical"
-        padding: 40
-        spacing: 20
+        padding: dp(40)
+        spacing: dp(20)
 
         MDTextField:
             id: root_username
             text: app.root_username
             hint_text: "Username"
-            font_size: 20 
+            font_size: dp(20)
             multiline: False
             required: True
             helper_text_mode: "on_error"
@@ -39,7 +62,7 @@ WindowManager:
             id: root_password
             text: app.root_password
             hint_text: "Password"
-            font_size: 20 
+            font_size: dp(20)
             multiline: False
             required: True
             helper_text_mode: "on_error"
@@ -48,44 +71,42 @@ WindowManager:
             text_color_normal: 1, 1, 1, 1
 
         MDBoxLayout:
-            orientation: "horizontal"
-            padding_x: 40
-            spacing: 230
             MDRaisedButton:
-                id: settings_submit
+                id: account_submit
                 text: "Submit"
-                font_size: 20
+                font_size: dp(20)
+                pos_hint: {"center_y": 0.5}
                 on_release:
-                    if app.validateData(root_username.text, root_password.text) == "True": \
-                    app.saveSettings(root_username.text, root_password.text)
-                    root.dismiss() 
+                    if app.saveSettings(root_username.text, root_password.text) == True: root.dismiss()
+                    
+            AnchorLayout:
+                anchor_x: "right"
 
-            MDRaisedButton:
-                text: "Close"
-                font_size: 20
-                color: "red"
-                on_release: root.dismiss()
-
+                MDRaisedButton:
+                    text: "Close"
+                    font_size: dp(20)
+                    color: "red"
+                    on_release: root.dismiss()
 
 <AccountCreatePopup@Popup>:
     auto_dismiss: False 
     size_hint: 0.4, 0.7
     title: "Store an Account"
     bold: True
-    title_size: '32sp'
+    title_size: dp(32)
     title_color: 1, 1, 1, 1
     title_align: "center"
     separator_color: 1, 1, 1, 0
 
     MDBoxLayout:
         orientation: "vertical"
-        padding: 40, 15
-        spacing: 20
+        padding: dp(40), dp(15)
+        spacing: dp(20)
 
         MDTextField:
             id: account_app
             hint_text: "Application (i.e Google, Minecraft, etc)"
-            font_size: 20 
+            font_size: dp(20) 
             multiline: False
             required: True
             helper_text_mode: "on_error"
@@ -95,7 +116,7 @@ WindowManager:
         MDTextField:
             id: account_username
             hint_text: "Username"
-            font_size: 20 
+            font_size: dp(20) 
             multiline: False
             required: True
             helper_text_mode: "on_error"
@@ -105,7 +126,7 @@ WindowManager:
         MDTextField:
             id: account_email
             hint_text: "Email"
-            font_size: 20 
+            font_size: dp(20) 
             multiline: False
             required: True
             helper_text_mode: "on_error"
@@ -115,7 +136,7 @@ WindowManager:
         MDTextField:
             id: account_password
             hint_text: "Password"
-            font_size: 20 
+            font_size: dp(20) 
             multiline: False
             required: True
             helper_text_mode: "on_error"
@@ -126,31 +147,25 @@ WindowManager:
             MDRaisedButton:
                 id: account_submit
                 text: "Submit"
-                font_size: 20
+                font_size: dp(20)
+                pos_hint: {"center_y": 0.5}
                 on_release:
-                    if app.validateData(account_app.text, account_username.text, account_email.text, account_password.text) == "True": \
-                    app.createAccount(account_app.text, account_username.text, account_email.text, account_password.text)
-                    root.dismiss() 
+                    if app.createAccount(account_app.text, account_username.text, account_email.text, account_password.text) == True: root.dismiss()
                     
             AnchorLayout:
                 anchor_x: "right"
 
                 MDRaisedButton:
                     text: "Close"
-                    font_size: 20
+                    font_size: dp(20)
                     color: "red"
                     on_release: root.dismiss()
 
 
 <LoginWindow>:
     name: "login"
-    username: username
-    password: password
 
-    Image:
-        source: "Images/Login_Background_2.jpg"
-        allow_stretch: True
-        keep_ratio: False 
+    BackgroundImage:
 
     MDAnchorLayout:
         anchor_x: "center"
@@ -159,34 +174,20 @@ WindowManager:
         MDCard:
             size_hint: 0.2, 0.3
             orientation: 'vertical'
-            padding: 25
-            spacing: 30
+            padding: dp(25)
+            spacing: dp(30)
 
             MDTextField:
                 id: username
                 hint_text: "Username"
                 multiline: False
-                text_size: 24
+                text_size: dp(24)
                 icon_left: "account"
                 color: 24/255, 108/255, 240/255
 
-            MDRelativeLayout:
-                MDTextField:
-                    id: password
-                    hint_text: "Password"
-                    hint_text_color: 1, 1, 1, 1
-                    multiline: False
-                    password: True
-                    icon_left: "key-variant"
+            PasswordLayout:
+                id: pw
 
-                MDIconButton:
-                    icon: "eye-off"
-                    pos_hint: {"center_y": 1.75}
-                    pos: password.width - self.width + dp(1), 0
-                    theme_text_color: "Hint"
-                    on_release:
-                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
-                        password.password = False if password.password is True else True
             AnchorLayout:
                 anchor_x: "center"
                 anchor_y: "bottom"
@@ -194,39 +195,37 @@ WindowManager:
                 MDRaisedButton:
                     text: "Login"
                     md_bg_color: "#186cf0"
-                    font_size: "24sp"
+                    font_size: dp(24)
                     on_release: 
-                        root.manager.current = "home" if root.validateLogin(username.text, password.text) == True else "login"
+                        if root.validateLogin(username.text, pw.ids.password.text) == "True": \
+                        root.manager.current = "home" 
                         root.manager.transition.direction = "left"
 
 <HomeWindow>:
     name: "home"
 
-    Image:
-        source: "Images/Login_Background_2.jpg"
-        allow_stretch: True
-        keep_ratio: False 
+    BackgroundImage:
 
     MDBoxLayout:
         orientation: "vertical"
-        padding: 20
-        spacing: 20
+        padding: dp(20)
+        spacing: dp(20)
 
         MDBoxLayout:
             orientation: "horizontal"
-            padding_x: 20
-            spacing: 20
+            padding_x: dp(20)
+            spacing: dp(20)
 
             MDCard:
                 id: account_create
                 orientation: "vertical"
-                spacing: 20
+                spacing: dp(20)
                 on_release: Factory.AccountCreatePopup().open()
 
                 AnchorLayout:
                     anchor_x: "left"
                     anchor_y: "top"
-                    padding: 20
+                    padding: dp(20)
                     size_hint: 0.1, 0.1
                     MDIconButton:
                         icon: "cog"
@@ -235,18 +234,18 @@ WindowManager:
 
                 MDBoxLayout:
                     orientation: "vertical"
-                    padding: 125
-                    spacing: 40
+                    padding: dp(125)
+                    spacing: dp(40)
                     valign: "center"
 
                     MDIcon:
                         icon: "account-arrow-up"
-                        font_size: 65
+                        font_size: dp(65)
                         pos_hint: {"center_x": 0.5}
                        
                     MDLabel:
                         text: "Create"
-                        font_size: 30
+                        font_size: dp(30)
                         bold: True
                         halign: "center"
                     
@@ -254,59 +253,59 @@ WindowManager:
             MDCard:
                 id: account_search
                 orientation: "vertical"
-                spacing: 20
-                padding: 100
+                spacing: dp(20)
+                padding: dp(100)
 
                 MDIcon:
                     icon: "magnify"
-                    font_size: 65
+                    font_size: dp(65)
                     pos_hint: {"center_x": 0.5}
                     halign: "center"
 
                 MDLabel:
                     text: "Search"
-                    font_size: 30
+                    font_size: dp(30)
                     bold: True
                     halign: "center"
 
         MDBoxLayout:
             orientation: "horizontal"
-            padding_x: 20
-            spacing: 20
+            padding_x: dp(20)
+            spacing: dp(20)
 
             MDCard:
                 id: account_edit
                 orientation: "vertical"
-                spacing: 20
-                padding: 100
+                spacing: dp(20)
+                padding: dp(100)
 
                 MDIcon:
                     icon: "account-edit-outline"
-                    font_size: 65
+                    font_size: dp(65)
                     pos_hint: {"center_x": 0.5}
                     halign: "center"
 
                 MDLabel:
                     text: "Edit"
-                    font_size: 30
+                    font_size: dp(30)
                     bold: True
                     halign: "center"
                     
             MDCard:
                 id: account_delete
                 orientation: "vertical"
-                spacing: 20
-                padding: 100
+                spacing: dp(20)
+                padding: dp(100)
 
                 MDIcon:
                     icon: "delete-empty-outline"
-                    font_size: 65
+                    font_size: dp(65)
                     pos_hint: {"center_x": 0.5}
                     halign: "center"
 
                 MDLabel:
                     text: "Delete"
-                    font_size: 30
+                    font_size: dp(30)
                     bold: True
                     halign: "center"
         

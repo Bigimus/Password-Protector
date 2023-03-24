@@ -36,9 +36,9 @@ This program will be ran through a GUI
 class LoginWindow(MDScreen):
     def validateLogin(self, username, password):
         if username == Settings().root_username and password == Settings().root_password:   # noqa: E501
-            return True
+            return "True"
         else: 
-            return False
+            return "False"
         
 class HomeWindow(MDScreen):
     pass
@@ -57,18 +57,26 @@ class MainApp(MDApp):
     def validateData(*args):
         for arg in args:
             if arg == "" and args.index(arg) != 0:
-                return "False"
+                return False
             else:
                 pass
-        return "True"
+        return True
      
     ## ACCOUNTS ##
     def createAccount(self, app, name, email, pw):
-        self.account = Account(app, name, email, pw).createAccount()
+        if self.validateData(app, name, email, pw) is True:
+            self.account = Account(app, name, email, pw).createAccount()
+            return True
+        else:
+            return False
 
     ## SETTINGS ##
     def saveSettings(self, root_username, root_password):
-        self.settings = Settings(root_username, root_password).saveSettings()
+        if self.validateData(root_username, root_password) is True:
+            self.settings = Settings(root_username, root_password).saveSettings()
+            return True
+        else:
+            return False
 
     def loadSettings(self):
         data = SH.readJson(SETTINGS)
