@@ -2,8 +2,25 @@
 #:import Factory kivy.factory.Factory
 
 WindowManager:
-    #LoginWindow:
+    LoginWindow:
     HomeWindow: 
+
+<CustomTextField@MDTextField>:
+    hint_font_size: dp(30)
+    font_size: dp(20) 
+    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+    multiline: False
+    mode: "rectangle"
+
+    #Normal
+    line_color_normal: 1, 1, 1, 1
+    hint_text_color_normal: 1, 1, 1, 1
+    text_color_normal: 1, 1, 1, 1
+
+    #Active
+    line_color_focus: 1, 1, 1, 1
+    hint_text_color_focus: 1, 1, 1, 1
+    text_color_focus: 1, 1, 1, 1
 
 <BackgroundImage@Image>:
     source: "Images/Background.jpg"
@@ -11,19 +28,19 @@ WindowManager:
     keep_ratio: False 
 
 <PasswordLayout@RelativeLayout>:
-    MDTextField:
+    id: password_layout
+    main_password: ""
+    CustomTextField:
         id: password
         hint_text: "Password"
-        hint_text_color: 1, 1, 1, 1
-        multiline: False
+        text: root.main_password
         password: True
-        icon_left: "key-variant"
 
     MDIconButton:
         icon: "eye-off"
-        pos_hint: {"center_y": 1.75}
-        pos: password.width - self.width + dp(1), 0
-        theme_text_color: "Hint"
+        pos_hint: {"center_x": 0.95, "center_y": 0.45}
+        text_color: 1, 1, 1, 1
+        theme_text_color: "Custom"
         on_release:
             self.icon = "eye" if self.icon == "eye-off" else "eye-off"
             password.password = False if password.password is True else True
@@ -46,29 +63,14 @@ WindowManager:
         padding: dp(40)
         spacing: dp(20)
 
-        MDTextField:
+        CustomTextField:
             id: root_username
             text: app.root_username
             hint_text: "Username"
-            font_size: dp(20)
-            multiline: False
-            required: True
-            helper_text_mode: "on_error"
-            line_color_normal: 1, 1, 1, 1
-            hint_text_color_normal: 1, 1, 1, 1
-            text_color_normal: 1, 1, 1, 1
 
-        MDTextField:
+        PasswordLayout:
             id: root_password
-            text: app.root_password
-            hint_text: "Password"
-            font_size: dp(20)
-            multiline: False
-            required: True
-            helper_text_mode: "on_error"
-            line_color_normal: 1, 1, 1, 1
-            hint_text_color_normal: 1, 1, 1, 1
-            text_color_normal: 1, 1, 1, 1
+            main_password: app.root_password
 
         MDBoxLayout:
             MDRaisedButton:
@@ -77,7 +79,7 @@ WindowManager:
                 font_size: dp(20)
                 pos_hint: {"center_y": 0.5}
                 on_release:
-                    if app.saveSettings(root_username.text, root_password.text) == True: root.dismiss()
+                    if app.saveSettings(root_username.text, root_password.ids.password.text) == True: root.dismiss()
                     
             AnchorLayout:
                 anchor_x: "right"
@@ -103,45 +105,20 @@ WindowManager:
         padding: dp(40), dp(15)
         spacing: dp(20)
 
-        MDTextField:
+        CustomTextField:
             id: account_app
             hint_text: "Application (i.e Google, Minecraft, etc)"
-            font_size: dp(20) 
-            multiline: False
-            required: True
-            helper_text_mode: "on_error"
-            line_color_normal: 1, 1, 1, 1
-            hint_text_color_normal: 1, 1, 1, 1
 
-        MDTextField:
+        CustomTextField:
             id: account_username
             hint_text: "Username"
-            font_size: dp(20) 
-            multiline: False
-            required: True
-            helper_text_mode: "on_error"
-            line_color_normal: 1, 1, 1, 1
-            hint_text_color_normal: 1, 1, 1, 1
 
-        MDTextField:
+        CustomTextField:
             id: account_email
             hint_text: "Email"
-            font_size: dp(20) 
-            multiline: False
-            required: True
-            helper_text_mode: "on_error"
-            line_color_normal: 1, 1, 1, 1
-            hint_text_color_normal: 1, 1, 1, 1
 
-        MDTextField:
-            id: account_password
-            hint_text: "Password"
-            font_size: dp(20) 
-            multiline: False
-            required: True
-            helper_text_mode: "on_error"
-            line_color_normal: 1, 1, 1, 1
-            hint_text_color_normal: 1, 1, 1, 1
+        PasswordLayout:
+            id: pw
 
         MDBoxLayout:
             MDRaisedButton:
@@ -150,7 +127,7 @@ WindowManager:
                 font_size: dp(20)
                 pos_hint: {"center_y": 0.5}
                 on_release:
-                    if app.createAccount(account_app.text, account_username.text, account_email.text, account_password.text) == True: root.dismiss()
+                    if app.createAccount(account_app.text, account_username.text, account_email.text, pw.ids.password.text) == True: root.dismiss()
                     
             AnchorLayout:
                 anchor_x: "right"
@@ -172,18 +149,15 @@ WindowManager:
         anchor_y: "center"
 
         MDCard:
-            size_hint: 0.2, 0.3
+            size_hint: 0.3, 0.3
             orientation: 'vertical'
-            padding: dp(25)
-            spacing: dp(30)
+            padding: dp(10)
+            spacing: dp(25)
+            background: "Images/Card_Background.png"
 
-            MDTextField:
+            CustomTextField:
                 id: username
                 hint_text: "Username"
-                multiline: False
-                text_size: dp(24)
-                icon_left: "account"
-                color: 24/255, 108/255, 240/255
 
             PasswordLayout:
                 id: pw
@@ -221,6 +195,7 @@ WindowManager:
                 orientation: "vertical"
                 spacing: dp(20)
                 on_release: Factory.AccountCreatePopup().open()
+                background: "Images/Card_Background.png"
 
                 AnchorLayout:
                     anchor_x: "left"
@@ -255,6 +230,7 @@ WindowManager:
                 orientation: "vertical"
                 spacing: dp(20)
                 padding: dp(100)
+                background: "Images/Card_Background.png"
 
                 MDIcon:
                     icon: "magnify"
@@ -278,6 +254,7 @@ WindowManager:
                 orientation: "vertical"
                 spacing: dp(20)
                 padding: dp(100)
+                background: "Images/Card_Background.png"
 
                 MDIcon:
                     icon: "account-edit-outline"
@@ -296,7 +273,8 @@ WindowManager:
                 orientation: "vertical"
                 spacing: dp(20)
                 padding: dp(100)
-
+                background: "Images/Card_Background.png"
+                
                 MDIcon:
                     icon: "delete-empty-outline"
                     font_size: dp(65)

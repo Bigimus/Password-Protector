@@ -51,6 +51,7 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = "Light"
         self.title = "Password Protector"
         self.kv = Builder.load_file(UI)
+        self.theme_cls.theme_style = "Dark"
         self.loadSettings()
         return self.kv
     
@@ -81,6 +82,7 @@ class MainApp(MDApp):
     def loadSettings(self):
         data = SH.readJson(SETTINGS)
         self.root_username = data["root_username"]
+        #self.kv.ids.password.text = data["root_password"]
         self.root_password = data["root_password"]
 
 
