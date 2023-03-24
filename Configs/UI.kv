@@ -1,0 +1,236 @@
+#:kivy 2.1.0
+#:import Factory kivy.factory.Factory
+
+WindowManager:
+    #LoginWindow:
+    HomeWindow:
+
+<AccountCreatePopup@Popup>:
+    auto_dismiss: False 
+    size_hint: 0.4, 0.8
+    title: "Store an Account"
+    bold: True
+    title_size: '32sp'
+    title_color: 1, 1, 1, 1
+    title_align: "center"
+    separator_color: 1, 1, 1, 0
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: 40, 15
+        spacing: 20
+
+        MDTextField:
+            id: account_app
+            hint_text: "Application (i.e Google, Minecraft, etc)"
+            font_size: 20 
+            multiline: False
+            required: True
+            helper_text_mode: "on_error"
+            line_color_normal: 1, 1, 1, 1
+            hint_text_color_normal: 1, 1, 1, 1
+
+        MDTextField:
+            id: account_username
+            hint_text: "Username"
+            font_size: 20 
+            multiline: False
+            required: True
+            helper_text_mode: "on_error"
+            line_color_normal: 1, 1, 1, 1
+            hint_text_color_normal: 1, 1, 1, 1
+
+        MDTextField:
+            id: account_email
+            hint_text: "Email"
+            font_size: 20 
+            multiline: False
+            required: True
+            helper_text_mode: "on_error"
+            line_color_normal: 1, 1, 1, 1
+            hint_text_color_normal: 1, 1, 1, 1
+
+        MDTextField:
+            id: account_password
+            hint_text: "Password"
+            font_size: 20 
+            multiline: False
+            required: True
+            helper_text_mode: "on_error"
+            line_color_normal: 1, 1, 1, 1
+            hint_text_color_normal: 1, 1, 1, 1
+
+        MDBoxLayout:
+            MDRaisedButton:
+                id: account_submit
+                text: "Submit"
+                font_size: 20
+                on_release:
+                    if app.validateData(account_app.text, account_username.text, account_email.text, account_password.text) == "True": \
+                    app.createAccount(account_app.text, account_username.text, account_email.text, account_password.text)
+                    root.dismiss() 
+                    
+
+            AnchorLayout:
+                anchor_x: "right"
+
+                MDRaisedButton:
+                    text: "Close"
+                    font_size: 20
+                    color: "red"
+                    on_release: root.dismiss()
+
+
+<LoginWindow>:
+    name: "login"
+    username: username
+    password: password
+
+    Image:
+        source: "Images/Login_Background_2.jpg"
+        allow_stretch: True
+        keep_ratio: False 
+
+    MDAnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+
+        MDCard:
+            size_hint: 0.2, 0.3
+            orientation: 'vertical'
+            padding: 25
+            spacing: 30
+
+            MDTextField:
+                id: username
+                hint_text: "Username"
+                multiline: False
+                text_size: 24
+                icon_left: "account"
+                color: 24/255, 108/255, 240/255
+
+            MDRelativeLayout:
+                MDTextField:
+                    id: password
+                    hint_text: "Password"
+                    hint_text_color: 1, 1, 1, 1
+                    multiline: False
+                    password: True
+                    icon_left: "key-variant"
+
+                MDIconButton:
+                    icon: "eye-off"
+                    pos_hint: {"center_y": 1.75}
+                    pos: password.width - self.width + dp(1), 0
+                    theme_text_color: "Hint"
+                    on_release:
+                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                        password.password = False if password.password is True else True
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "bottom"
+
+                MDRaisedButton:
+                    text: "Login"
+                    md_bg_color: "#186cf0"
+                    font_size: "24sp"
+                    on_release: 
+                        root.manager.current = "home" if root.validateLogin(username.text, password.text) == True else "login"
+                        root.manager.transition.direction = "left"
+
+<HomeWindow>:
+    name: "home"
+
+    Image:
+        source: "Images/Login_Background_2.jpg"
+        allow_stretch: True
+        keep_ratio: False 
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 20
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding_x: 20
+            spacing: 20
+
+            MDCard:
+                id: account_create
+                orientation: "vertical"
+                spacing: 20
+                padding: 100
+                on_release: Factory.AccountCreatePopup().open()
+                MDIcon:
+                    icon: "account-arrow-up"
+                    font_size: 65
+                    pos_hint: {"center_x": 0.5}
+                    halign: "center"
+
+                MDLabel:
+                    text: "Create"
+                    font_size: 30
+                    bold: True
+                    halign: "center"
+                    
+            MDCard:
+                id: account_search
+                orientation: "vertical"
+                spacing: 20
+                padding: 100
+
+                MDIcon:
+                    icon: "magnify"
+                    font_size: 65
+                    pos_hint: {"center_x": 0.5}
+                    halign: "center"
+
+                MDLabel:
+                    text: "Search"
+                    font_size: 30
+                    bold: True
+                    halign: "center"
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding_x: 20
+            spacing: 20
+
+            MDCard:
+                id: account_edit
+                orientation: "vertical"
+                spacing: 20
+                padding: 100
+
+                MDIcon:
+                    icon: "account-edit-outline"
+                    font_size: 65
+                    pos_hint: {"center_x": 0.5}
+                    halign: "center"
+
+                MDLabel:
+                    text: "Edit"
+                    font_size: 30
+                    bold: True
+                    halign: "center"
+                    
+            MDCard:
+                id: account_delete
+                orientation: "vertical"
+                spacing: 20
+                padding: 100
+
+                MDIcon:
+                    icon: "delete-empty-outline"
+                    font_size: 65
+                    pos_hint: {"center_x": 0.5}
+                    halign: "center"
+
+                MDLabel:
+                    text: "Delete"
+                    font_size: 30
+                    bold: True
+                    halign: "center"
+        
+
