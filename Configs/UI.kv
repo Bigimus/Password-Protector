@@ -4,7 +4,8 @@
 WindowManager:
     LoginWindow:
     HomeWindow: 
-
+<ApplicationDropDown@DropDown>:
+    
 <CustomTextField@MDTextField>:
     hint_font_size: dp(30)
     font_size: dp(20) 
@@ -107,7 +108,7 @@ WindowManager:
 
         CustomTextField:
             id: account_app
-            hint_text: "Application (i.e Google, Minecraft, etc)"
+            hint_text: "Application (i.e Google, Steam, etc)"
 
         CustomTextField:
             id: account_username
@@ -119,6 +120,53 @@ WindowManager:
 
         PasswordLayout:
             id: pw
+
+        MDBoxLayout:
+            MDRaisedButton:
+                id: account_submit
+                text: "Submit"
+                font_size: dp(20)
+                pos_hint: {"center_y": 0.5}
+                on_release:
+                    if app.createAccount(account_app.text, account_username.text, account_email.text, pw.ids.password.text) == True: root.dismiss()
+                    
+            AnchorLayout:
+                anchor_x: "right"
+
+                MDRaisedButton:
+                    text: "Close"
+                    font_size: dp(20)
+                    color: "red"
+                    on_release: root.dismiss()
+
+<SearchPopup@Popup>:
+    auto_dismiss: False
+    size_hint: 0.4, 0.7
+    title: "Search for an Account"
+    bold: True
+    title_size: dp(32)
+    title_color: 1, 1, 1, 1
+    title_align: "center"
+    separator_color: 1, 1, 1, 0
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: dp(40), dp(15)
+        spacing: dp(20)
+
+        CustomTextField:
+            id: account_app
+            hint_text: "Application (i.e Google, Steam, etc)"
+
+        CustomTextField:
+            id: account_email
+            hint_text: "Email"
+
+        CustomTextField:
+            id: account_username
+            hint_text: "Username"
+
+        PasswordLayout:
+            id: account_password
 
         MDBoxLayout:
             MDRaisedButton:
@@ -257,7 +305,7 @@ WindowManager:
                 background: "Images/Card_Background.png"
 
                 MDIcon:
-                    icon: "account-edit-outline"
+                    icon: "account-edit"
                     font_size: dp(65)
                     pos_hint: {"center_x": 0.5}
                     halign: "center"
@@ -274,9 +322,9 @@ WindowManager:
                 spacing: dp(20)
                 padding: dp(100)
                 background: "Images/Card_Background.png"
-                
+
                 MDIcon:
-                    icon: "delete-empty-outline"
+                    icon: "delete-empty"
                     font_size: dp(65)
                     pos_hint: {"center_x": 0.5}
                     halign: "center"

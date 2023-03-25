@@ -13,6 +13,7 @@ import StorageHandler as SH
 
 UI = Config.UI
 SETTINGS = Config.SETTINGS
+APPLICATION = Config.ACCOUNTS
 
 Window.size = 1280, 720
 
@@ -53,6 +54,7 @@ class MainApp(MDApp):
         self.kv = Builder.load_file(UI)
         self.theme_cls.theme_style = "Dark"
         self.loadSettings()
+        self.searchApplication("Steam")
         return self.kv
     
     def validateData(*args):
@@ -71,6 +73,12 @@ class MainApp(MDApp):
         else:
             return False
 
+    def searchApplication(self, application):
+        pass
+
+    def searchEmail(self, application, email):
+        pass
+
     ## SETTINGS ##
     def saveSettings(self, root_username, root_password):
         if self.validateData(root_username, root_password) is True:
@@ -82,8 +90,9 @@ class MainApp(MDApp):
     def loadSettings(self):
         data = SH.readJson(SETTINGS)
         self.root_username = data["root_username"]
-        #self.kv.ids.password.text = data["root_password"]
         self.root_password = data["root_password"]
+
+    
 
 
 MainApp().run()
