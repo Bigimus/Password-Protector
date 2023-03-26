@@ -49,7 +49,7 @@ class HomeWindow(MDScreen):
     
 class SearchWindow(MDScreen):
     def openAppMenu(self):
-        self.fernet = Security("PNC7uPvO_CBBXdgNjQrUaG3L9iBaIlF9O2HXPlRlwco=")
+        self.fernet = Security(Config.FERNET)
         data = SH.readJson(APPLICATION)
         apps = [
             {
@@ -138,7 +138,7 @@ class WindowManager(MDScreenManager):
 
 class MainApp(MDApp):
     data = SH.readJson(SETTINGS)
-    fernet = Security("PNC7uPvO_CBBXdgNjQrUaG3L9iBaIlF9O2HXPlRlwco=")
+    fernet = Security(Config.FERNET)
     root_username = data["root_username"]
     root_password = fernet.decryptData(data["root_password"])
 
@@ -160,8 +160,7 @@ class MainApp(MDApp):
 
     def loadSettings(self):
         data = SH.readJson(SETTINGS)
-        global root_username, root_password
-        root_username = data["root_username"]
-        root_password = self.fernet.decryptData(data["root_password"])
+        self.root_username = data["root_username"]
+        self.root_password = self.fernet.decryptData(data["root_password"])
 
 MainApp().run()
