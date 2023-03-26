@@ -4,8 +4,12 @@
 WindowManager:
     LoginWindow:
     HomeWindow: 
-<ApplicationDropDown@DropDown>:
-    
+    SearchWindow:
+    CreateWindow:
+    SettingsWindow:
+    EditWindow:
+    DeleteWindow:
+
 <CustomTextField@MDTextField>:
     hint_font_size: dp(30)
     font_size: dp(20) 
@@ -28,165 +32,6 @@ WindowManager:
     allow_stretch: True
     keep_ratio: False 
 
-<PasswordLayout@RelativeLayout>:
-    id: password_layout
-    main_password: ""
-    CustomTextField:
-        id: password
-        hint_text: "Password"
-        text: root.main_password
-        password: True
-
-    MDIconButton:
-        icon: "eye-off"
-        pos_hint: {"center_x": 0.95, "center_y": 0.45}
-        text_color: 1, 1, 1, 1
-        theme_text_color: "Custom"
-        on_release:
-            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
-            password.password = False if password.password is True else True
-
-<SettingsPopup@Popup>:
-    id: Settings
-    auto_dismiss: False 
-    size_hint: 0.4, 0.5
-    title: "Settings"
-    bold: True
-    title_size: dp(32)
-    title_color: 1, 1, 1, 1
-    title_align: "center"
-    separator_color: 1, 1, 1, 0
-    on_open: app.loadSettings()
-    on_dismiss: app.loadSettings()
-
-    MDBoxLayout:
-        orientation: "vertical"
-        padding: dp(40)
-        spacing: dp(20)
-
-        CustomTextField:
-            id: root_username
-            text: app.root_username
-            hint_text: "Username"
-
-        PasswordLayout:
-            id: root_password
-            main_password: app.root_password
-
-        MDBoxLayout:
-            MDRaisedButton:
-                id: account_submit
-                text: "Submit"
-                font_size: dp(20)
-                pos_hint: {"center_y": 0.5}
-                on_release:
-                    if app.saveSettings(root_username.text, root_password.ids.password.text) == True: root.dismiss()
-                    
-            AnchorLayout:
-                anchor_x: "right"
-
-                MDRaisedButton:
-                    text: "Close"
-                    font_size: dp(20)
-                    color: "red"
-                    on_release: root.dismiss()
-
-<AccountCreatePopup@Popup>:
-    auto_dismiss: False 
-    size_hint: 0.4, 0.7
-    title: "Store an Account"
-    bold: True
-    title_size: dp(32)
-    title_color: 1, 1, 1, 1
-    title_align: "center"
-    separator_color: 1, 1, 1, 0
-
-    MDBoxLayout:
-        orientation: "vertical"
-        padding: dp(40), dp(15)
-        spacing: dp(20)
-
-        CustomTextField:
-            id: account_app
-            hint_text: "Application (i.e Google, Steam, etc)"
-
-        CustomTextField:
-            id: account_username
-            hint_text: "Username"
-
-        CustomTextField:
-            id: account_email
-            hint_text: "Email"
-
-        PasswordLayout:
-            id: pw
-
-        MDBoxLayout:
-            MDRaisedButton:
-                id: account_submit
-                text: "Submit"
-                font_size: dp(20)
-                pos_hint: {"center_y": 0.5}
-                on_release:
-                    if app.createAccount(account_app.text, account_username.text, account_email.text, pw.ids.password.text) == True: root.dismiss()
-                    
-            AnchorLayout:
-                anchor_x: "right"
-
-                MDRaisedButton:
-                    text: "Close"
-                    font_size: dp(20)
-                    color: "red"
-                    on_release: root.dismiss()
-
-<SearchPopup@Popup>:
-    auto_dismiss: False
-    size_hint: 0.4, 0.7
-    title: "Search for an Account"
-    bold: True
-    title_size: dp(32)
-    title_color: 1, 1, 1, 1
-    title_align: "center"
-    separator_color: 1, 1, 1, 0
-    MDBoxLayout:
-        orientation: "vertical"
-        padding: dp(40), dp(15)
-        spacing: dp(20)
-
-        CustomTextField:
-            id: account_app
-            hint_text: "Application (i.e Google, Steam, etc)"
-
-        CustomTextField:
-            id: account_email
-            hint_text: "Email"
-
-        CustomTextField:
-            id: account_username
-            hint_text: "Username"
-
-        PasswordLayout:
-            id: account_password
-
-        MDBoxLayout:
-            MDRaisedButton:
-                id: account_submit
-                text: "Submit"
-                font_size: dp(20)
-                pos_hint: {"center_y": 0.5}
-                on_release:
-                    if app.createAccount(account_app.text, account_username.text, account_email.text, pw.ids.password.text) == True: root.dismiss()
-                    
-            AnchorLayout:
-                anchor_x: "right"
-
-                MDRaisedButton:
-                    text: "Close"
-                    font_size: dp(20)
-                    color: "red"
-                    on_release: root.dismiss()
-
-
 <LoginWindow>:
     name: "login"
 
@@ -204,11 +49,23 @@ WindowManager:
             background: "Images/Card_Background.png"
 
             CustomTextField:
-                id: username
+                id: root_username
                 hint_text: "Username"
 
-            PasswordLayout:
-                id: pw
+            RelativeLayout:
+                CustomTextField:
+                    id: root_password
+                    hint_text: "Password"
+                    password: True
+
+                MDIconButton:
+                    icon: "eye-off"
+                    pos_hint: {"center_x": 0.95, "center_y": 0.45}
+                    text_color: 1, 1, 1, 1
+                    theme_text_color: "Custom"
+                    on_release:
+                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                        root_password.password = False if root_password.password is True else True
 
             AnchorLayout:
                 anchor_x: "center"
@@ -219,7 +76,7 @@ WindowManager:
                     md_bg_color: "#186cf0"
                     font_size: dp(24)
                     on_release: 
-                        if root.validateLogin(username.text, pw.ids.password.text) == "True": \
+                        if root.validateLogin(root_username.text, root_password.text) == "True": \
                         root.manager.current = "home" 
                         root.manager.transition.direction = "left"
 
@@ -242,8 +99,10 @@ WindowManager:
                 id: account_create
                 orientation: "vertical"
                 spacing: dp(20)
-                on_release: Factory.AccountCreatePopup().open()
                 background: "Images/Card_Background.png"
+                on_release: 
+                    root.manager.current = "create" 
+                    root.manager.transition.direction = "left"
 
                 AnchorLayout:
                     anchor_x: "left"
@@ -253,7 +112,8 @@ WindowManager:
                     MDIconButton:
                         icon: "cog"
                         on_release:
-                            Factory.SettingsPopup().open()
+                            root.manager.current = "settings"
+                            root.manager.transition.direction = "left"
 
                 MDBoxLayout:
                     orientation: "vertical"
@@ -279,7 +139,9 @@ WindowManager:
                 spacing: dp(20)
                 padding: dp(100)
                 background: "Images/Card_Background.png"
-
+                on_release: 
+                    root.manager.current = "search" 
+                    root.manager.transition.direction = "left"
                 MDIcon:
                     icon: "magnify"
                     font_size: dp(65)
@@ -303,7 +165,9 @@ WindowManager:
                 spacing: dp(20)
                 padding: dp(100)
                 background: "Images/Card_Background.png"
-
+                on_release:
+                    root.manager.current = "edit"
+                    root.manager.transition.direction = "left"
                 MDIcon:
                     icon: "account-edit"
                     font_size: dp(65)
@@ -322,7 +186,9 @@ WindowManager:
                 spacing: dp(20)
                 padding: dp(100)
                 background: "Images/Card_Background.png"
-
+                on_release: 
+                    root.manager.current = "delete" 
+                    root.manager.transition.direction = "left"
                 MDIcon:
                     icon: "delete-empty"
                     font_size: dp(65)
@@ -335,4 +201,308 @@ WindowManager:
                     bold: True
                     halign: "center"
         
+<SearchWindow>:
+    name: "search"
+    BackgroundImage:
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+        MDCard:
+            orientation: "vertical"
+            padding: dp(30), dp(30)
+            spacing: dp(30)
+            size_hint: 0.5, 0.7
 
+            CustomTextField:
+                id: search_app
+                hint_text: "Select Application"
+                size_hint: 1, 1
+                readonly: True
+                on_focus: 
+                    if self.focus: \
+                    root.openAppMenu()
+                    
+            CustomTextField:
+                id: search_email
+                hint_text: "Select Email"
+                size_hint: 1, 1,
+                readonly: True
+                on_focus:
+                    root.openEmailMenu(search_app.text) if search_app.text != "" else False if self.focus else False
+            CustomTextField:
+                id: account_username
+                hint_text: "Username"
+                readonly: True
+
+            RelativeLayout:
+                CustomTextField:
+                    id: account_password
+                    hint_text: "Password"
+                    password: True
+                    readonly: True
+
+                MDIconButton:
+                    icon: "eye-off"
+                    pos_hint: {"center_x": 0.95, "center_y": 0.45}
+                    text_color: 1, 1, 1, 1
+                    theme_text_color: "Custom"
+                    on_release:
+                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                        account_password.password = False if account_password.password is True else True
+            AnchorLayout:
+                anchor_x: "right"
+
+                MDRaisedButton:
+                    text: "Home"
+                    font_size: dp(20)
+                    color: "red"
+                    on_release: root.manager.current = "home"
+
+<CreateWindow>:
+    name: "create"
+    BackgroundImage:
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+        MDCard:
+            orientation: "vertical"
+            padding: dp(30), dp(30)
+            spacing: dp(20)
+            size_hint: 0.5, 0.7
+
+            CustomTextField:
+                id: account_app
+                hint_text: "Application (i.e Google, Steam, etc)"
+
+            CustomTextField:
+                id: account_email
+                hint_text: "Email"
+
+            CustomTextField:
+                id: account_username
+                hint_text: "Username"
+
+            RelativeLayout:
+                CustomTextField:
+                    id: account_password
+                    hint_text: "Password"
+                    password: True
+
+                MDIconButton:
+                    icon: "eye-off"
+                    pos_hint: {"center_x": 0.95, "center_y": 0.45}
+                    text_color: 1, 1, 1, 1
+                    theme_text_color: "Custom"
+                    on_release:
+                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                        account_password.password = False if account_password.password is True else True
+
+            MDBoxLayout:
+                MDRaisedButton:
+                    id: account_submit
+                    text: "Submit"
+                    font_size: dp(20)
+                    pos_hint: {"center_y": 0.5}
+                    on_release:
+                        if app.validateData(account_app.text, account_username.text, account_email.text, account_password.text) == True: \
+                        root.createAccount(account_app.text, account_username.text, account_email.text, account_password.text)
+                        
+                AnchorLayout:
+                    anchor_x: "right"
+
+                    MDRaisedButton:
+                        text: "Home"
+                        font_size: dp(20)
+                        color: "red"
+                        on_release: 
+                            root.manager.current = "home"
+
+<SettingsWindow>:
+    name: "settings"
+    on_enter: app.loadSettings()
+    root_username: root_username
+    root_password: root_password
+    BackgroundImage:
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+        MDCard:
+            orientation: "vertical"
+            padding: dp(40)
+            spacing: dp(20)
+            size_hint: 0.4, 0.425
+
+            CustomTextField:
+                id: root_username
+                text: app.root_username
+                hint_text: "Root Username"
+
+            RelativeLayout:
+                CustomTextField:
+                    id: root_password
+                    text: app.root_password
+                    hint_text: "Root Password"
+                    password: True
+
+                MDIconButton:
+                    icon: "eye-off"
+                    pos_hint: {"center_x": 0.95, "center_y": 0.45}
+                    text_color: 1, 1, 1, 1
+                    theme_text_color: "Custom"
+                    on_release:
+                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                        root_password.password = False if root_password.password is True else True
+
+            MDBoxLayout:
+                MDRaisedButton:
+                    id: account_submit
+                    text: "Save"
+                    font_size: dp(20)
+                    pos_hint: {"center_y": 0.5}
+                    on_release:
+                        if app.validateData(root_username.text, root_password.text) == True: \
+                        root.saveSettings(root_username.text, root_password.text)
+                        
+                AnchorLayout:
+                    anchor_x: "right"
+
+                    MDRaisedButton:
+                        text: "Home"
+                        font_size: dp(20)
+                        color: "red"
+                        on_release: root.manager.current = "home"
+                    
+<EditWindow>:
+    name: "edit"
+    BackgroundImage:
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+        MDCard:
+            orientation: "vertical"
+            padding: dp(30), dp(30)
+            spacing: dp(30)
+            size_hint: 0.5, 0.7
+
+            CustomTextField:
+                id: search_app
+                hint_text: "Select Application"
+                size_hint: 1, 1
+                readonly: True
+                on_focus: 
+                    if self.focus: \
+                    root.openAppMenu()
+                    
+            CustomTextField:
+                id: search_email
+                hint_text: "Select Email"
+                size_hint: 1, 1,
+                readonly: True
+                on_focus:
+                    root.openEmailMenu(search_app.text) if search_app.text != "" else False if self.focus else False
+                    
+            CustomTextField:
+                id: account_username
+                hint_text: "Username"
+                
+            RelativeLayout:
+                CustomTextField:
+                    id: account_password
+                    hint_text: "Password"
+                    password: True
+                    
+                MDIconButton:
+                    icon: "eye-off"
+                    pos_hint: {"center_x": 0.95, "center_y": 0.45}
+                    text_color: 1, 1, 1, 1
+                    theme_text_color: "Custom"
+                    on_release:
+                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                        account_password.password = False if account_password.password is True else True
+            MDBoxLayout:
+                MDRaisedButton:
+                    id: account_submit
+                    text: "Save"
+                    font_size: dp(20)
+                    pos_hint: {"center_y": 0.5}
+                    on_release:
+                        if app.validateData(search_app.text, search_email.text, account_username.text, account_password.text) == True: \
+                        root.saveAccount(search_app.text, search_email.text, account_username.text, account_password.text)
+                        
+                AnchorLayout:
+                    anchor_x: "right"
+
+                    MDRaisedButton:
+                        text: "Home"
+                        font_size: dp(20)
+                        color: "red"
+                        on_release: root.manager.current = "home"
+
+<DeleteWindow>:
+    name: "delete"
+    BackgroundImage:
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
+        MDCard:
+            orientation: "vertical"
+            padding: dp(30), dp(30)
+            spacing: dp(30)
+            size_hint: 0.5, 0.7
+
+            CustomTextField:
+                id: search_app
+                hint_text: "Select Application"
+                size_hint: 1, 1
+                readonly: True
+                on_focus: 
+                    if self.focus: \
+                    root.openAppMenu()
+                    
+            CustomTextField:
+                id: search_email
+                hint_text: "Select Email"
+                size_hint: 1, 1,
+                readonly: True
+                on_focus:
+                    root.openEmailMenu(search_app.text) if search_app.text != "" else False if self.focus else False
+
+            CustomTextField:
+                id: account_username
+                hint_text: "Username"
+                readonly: True
+
+            RelativeLayout:
+                CustomTextField:
+                    id: account_password
+                    hint_text: "Password"
+                    password: True
+                    readonly: True
+
+                MDIconButton:
+                    icon: "eye-off"
+                    pos_hint: {"center_x": 0.95, "center_y": 0.45}
+                    text_color: 1, 1, 1, 1
+                    theme_text_color: "Custom"
+                    on_release:
+                        self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                        account_password.password = False if account_password.password is True else True
+
+            MDBoxLayout:
+                MDRaisedButton:
+                    id: account_submit
+                    text: "Delete"
+                    font_size: dp(20)
+                    pos_hint: {"center_y": 0.5}
+                    on_release:
+                        if app.validateData(search_app.text, search_email.text, account_username.text, account_password.text) == True: \
+                        root.deleteAccount(search_app.text, search_email.text, account_username.text, account_password.text)
+                        
+                AnchorLayout:
+                    anchor_x: "right"
+
+                    MDRaisedButton:
+                        text: "Home"
+                        font_size: dp(20)
+                        color: "red"
+                        on_release: root.manager.current = "home"

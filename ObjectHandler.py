@@ -20,10 +20,10 @@ class Configurations:
 
 class Account:
 
-    def __init__(self, app_name, app_username, app_email, app_password) -> None:
+    def __init__(self, app_name, app_email, app_username, app_password) -> None:
         self.app_name = app_name
-        self.app_username = app_username
         self.app_email = app_email
+        self.app_username = app_username
         self.app_password = app_password
     
     def createAccount(self):
@@ -49,6 +49,36 @@ class Account:
             })
         
         SH.writeJson(Configurations.ACCOUNTS, data)
+    
+    def editAccount(self):
+        data = SH.readJson(Configurations.ACCOUNTS)
+        if self.app_name in data:
+            if self.app_email in data[self.app_name]:
+                data[self.app_name][self.app_email]["username"] = self.app_username
+                data[self.app_name][self.app_email]["password"] = self.app_password
+                SH.writeJson(Configurations.ACCOUNTS, data)
+            else:
+                raise KeyError
+        else:
+            raise KeyError
+    
+    def deleteAccount(self):
+        data = SH.readJson(Configurations.ACCOUNTS)
+        if self.app_name in data:
+
+            if len(data[self.app_name]) == 1:
+                del data[self.app_name]
+                SH.writeJson(Configurations.ACCOUNTS, data)
+    
+            elif self.app_email in data[self.app_name]:
+                del data[self.app_name][self.app_email]
+                SH.writeJson(Configurations.ACCOUNTS, data)
+                
+            else:
+                raise KeyError
+        else:
+            raise KeyError
+
 
 class Settings:
     data = SH.readJson(Configurations.SETTINGS)
