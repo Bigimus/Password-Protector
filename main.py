@@ -10,6 +10,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from ObjectHandler import Configurations as Config
 from ObjectHandler import Account
 from ObjectHandler import Settings
+from ObjectHandler import Security
 
 import StorageHandler as SH
 
@@ -48,6 +49,7 @@ class HomeWindow(MDScreen):
     
 class SearchWindow(MDScreen):
     def openAppMenu(self):
+        self.fernet = Security("PNC7uPvO_CBBXdgNjQrUaG3L9iBaIlF9O2HXPlRlwco=")
         data = SH.readJson(APPLICATION)
         apps = [
             {
@@ -98,7 +100,7 @@ class SearchWindow(MDScreen):
         data = SH.readJson(APPLICATION)
         data = data[app][email]
         self.ids.account_username.text = data["username"]
-        self.ids.account_password.text = data["password"]
+        self.ids.account_password.text = self.fernet.decryptData(data["password"])
         
 class CreateWindow(MDScreen):
     def createAccount(self, app, email, username, password):
@@ -136,9 +138,10 @@ class WindowManager(MDScreenManager):
 
 class MainApp(MDApp):
     data = SH.readJson(SETTINGS)
+    fernet = Security("PNC7uPvO_CBBXdgNjQrUaG3L9iBaIlF9O2HXPlRlwco=")
     root_username = data["root_username"]
-    root_password = data["root_password"]
-    
+    root_password = fernet.decryptData(data["root_password"])
+
     def build(self):
         self.theme_cls.theme_style = "Light"
         self.title = "Password Protector"
@@ -159,6 +162,6 @@ class MainApp(MDApp):
         data = SH.readJson(SETTINGS)
         global root_username, root_password
         root_username = data["root_username"]
-        root_password = data["root_password"]
+        root_password = self.fernet.decryptData(data["root_password"])
 
 MainApp().run()
